@@ -20,7 +20,7 @@ dp = Dispatcher(bot)
 # /newgame 
 @dp.message_handler(commands=['newgame'])
 async def new_game(message: types.Message):
-    stake = float(message.get_args())  # Получаем ставку из аргументов команды
+    stake = float(message.get_args()) 
     player1_id = message.from_user.id
     # Добавляем новую игру в базу данных
     cursor.execute('INSERT INTO games (creator_id, stake, player1_id) VALUES (?, ?, ?)', (player1_id, stake, player1_id))
@@ -32,7 +32,6 @@ async def new_game(message: types.Message):
 async def join_game(message: types.Message):
     game_id = int(message.get_args())
     player2_id = message.from_user.id
-    # Обновляем информацию о втором игроке в базе данных
     cursor.execute('UPDATE games SET player2_id=? WHERE id=?', (player2_id, game_id))
     conn.commit()
     await message.answer(f'Вы присоединились к игре {game_id}! Ожидайте результат броска кубика.')
@@ -47,13 +46,13 @@ async def roll_dice(message: types.Message):
     result1 = random.randint(1, 6)
     result2 = random.randint(1, 6)
 
-    # можем повотрить спасибо деду за попеду
+    # Можем повотрить спасибо деду за попеду
     if result1 > result2:
         winner_id = player1_id
     elif result2 > result1:
         winner_id = player2_id
     else:
-        winner_id = None  # ничья
+        winner_id = None  # Ничья
 
     cursor.execute('UPDATE games SET winner_id=? WHERE id=?', (winner_id, game_id))
     conn.commit()
